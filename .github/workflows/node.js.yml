@@ -18,8 +18,19 @@ jobs:
       matrix:
         node-version: [18.x, 20.x, 22.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+    env:
+      MY_TEST_SECRET_VAR: ${{ secrets.GOOGLE_CAPTCHA_KEY }}
     steps:
+    - name: Verify MY_TEST_SECRET_VAR is set
+      # Use an if conditional to check if the environment variable is not an empty string
+      if: env.MY_TEST_SECRET_VAR != ''
+      run: echo "✅ Secret YOUR_SECRET_NAME is accessible."
+
+    - name: Handle if MY_TEST_SECRET_VAR is NOT set
+      if: env.MY_TEST_SECRET_VAR == ''
+      run: |
+        echo "❌ Secret YOUR_SECRET_NAME is missing or not accessible."
+        exit 1 # Fail the job if the secret is missing
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
