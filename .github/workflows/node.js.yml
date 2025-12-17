@@ -8,7 +8,16 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment Environment'
+        required: true
+        type: choice
+        options:
+          - development
+          - production
+        default: development
 jobs:
   build:
 
@@ -20,6 +29,7 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     env:
       MY_TEST_SECRET_VAR: ${{ secrets.GOOGLE_CAPTCHA_KEY }}
+      MY_REPO_SECRET: ${{ secrets.REPO_SECRET }}
     steps:
     - name: Verify MY_TEST_SECRET_VAR is set
       # Use an if conditional to check if the environment variable is not an empty string
@@ -30,6 +40,17 @@ jobs:
       if: env.MY_TEST_SECRET_VAR == ''
       run: |
         echo "❌ Secret YOUR_SECRET_NAME is missing or not accessible."
+        exit 1 # Fail the job if the secret is missing
+        
+    - name: Verify MY_TEST_SECRET_VAR is set
+      # Use an if conditional to check if the environment variable is not an empty string
+      if: env.MY_REPO_SECRET != ''
+      run: echo "✅ Secret MY_REPO_SECRET is accessible."
+
+    - name: Handle if MY_REPO_SECRET is NOT set
+      if: env.MY_REPO_SECRET == ''
+      run: |
+        echo "❌ Secret MY_REPO_SECRET is missing or not accessible."
         exit 1 # Fail the job if the secret is missing
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
