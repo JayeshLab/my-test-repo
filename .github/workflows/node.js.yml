@@ -16,13 +16,13 @@ on:
         default: development
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [22.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    environment:
+      name: ${{ github.event.inputs.environment }}
     env:
       MY_GOOGLE_CAPTCHA_KEY: ${{ secrets.GOOGLE_CAPTCHA_KEY }}
       MY_REPO_SECRET: ${{ secrets.REPO_SECRET }}
