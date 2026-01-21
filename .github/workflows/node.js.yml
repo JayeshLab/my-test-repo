@@ -6,14 +6,10 @@ name: Node.js CI
 on:
   workflow_dispatch:
     inputs:
-      environment:
-        description: 'Deployment Environment'
-        required: true
-        type: choice
-        options:
-          - development
-          - production
-        default: development
+      tags:
+        description: 'Deploy'
+        required: false
+        default: 'qa'
 jobs:
   build:
     runs-on: ubuntu-latest
