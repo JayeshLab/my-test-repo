@@ -6,10 +6,13 @@ name: Node.js CI
 on:
   workflow_dispatch:
     inputs:
-      tags:
-        description: 'Deploy'
-        required: false
-        default: 'qa'
+      target_branch:
+        description: 'Select the target branch'
+        required: true
+        default: qa
+        type: choice
+        options:
+          - qa
 jobs:
   build:
     runs-on: ubuntu-latest
